@@ -127,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
         new_instance = HBNBCommand.classes[args[0]](**new_dict)
         print(new_instance.id)
         new_instance.save()
-        
+    
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
