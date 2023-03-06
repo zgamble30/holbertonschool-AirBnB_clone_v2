@@ -111,6 +111,22 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
+    
+    def _create_dict_instance(self, args):
+        """Creates a new dictionary instance based on the given arguments."""
+        if len(args) == 0:
+            print("** class name missing **")
+            return None
+
+        class_name = args[0]
+        if not is_valid_class_name(class_name):
+            print("** class doesn't exist **")
+            return None
+
+        # Create a dictionary instance based on the remaining arguments
+        # ...
+
+        return new_dict
 
     def do_create(self, args):
         """ Create an object of any class"""
