@@ -112,21 +112,55 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
     
-    def do_create(self, args):
-        """ Create an object of any class"""
-        args = args.split()
-        if not args[0]:
-            print("** class name missing **")
-            return
-        elif args[0] not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        # creating a dict from args
-        new_dict = self._create_dict_instance(args[1:])
-        # sending args on form of kwargs
-        new_instance = HBNBCommand.classes[args[0]](**new_dict)
-        print(new_instance.id)
-        new_instance.save()
+    def do_create(self, arg):
+     """
+    Creates a new instance of a class and saves it to the JSON file.
+    Usage: create <class name> <param 1> <param 2> <param 3>...
+    Param syntax: <key name>=<value>
+    Value syntax:
+    String: "<value>" => starts with a double quote. Any double quote inside
+            the value must be escaped with a backslash \
+            All underscores _ must be replaced by spaces
+    Float: <unit>.<decimal> => contains a dot .
+    Integer: <number> => default case
+    """
+    # Parse command arguments
+    args = shlex.split(arg)
+    if len(args) == 0:
+        print("** class name missing **")
+        return
+    class_name = args[0]
+    if class_name not in self.classes:
+        print("** class doesn't exist **")
+        return
+
+    # Parse object attributes
+    attrs = {}
+    for arg in args[1:]:
+        parts = arg.split('=')
+        if len(parts) != 2:
+            continue
+        key, value = parts
+        if value.startswith('"') and value.endswith('"'):
+            value = value[1:-1].replace('_', ' ')
+            value = value.replace('\\"', '"')
+        elif '.' in value:
+            try:
+                value = float(value)
+            except ValueError:
+                continue
+        else:
+            try:
+                value = int(value)
+            except ValueError:
+                continue
+        attrs[key] = value
+
+    # Create object and save to file
+    obj = self.classes[class_name](**attrs)
+    obj.save()
+    print(obj.id)
+
 
     def help_create(self):
         """ Help information for the create method """
