@@ -1,16 +1,22 @@
-from sqlalchemy import Column, Integer, String
+#!/usr/bin/python3
+""" State Module for HBNB project """
+import models
+from models.base_model import BaseModel
+from models.base_model import Base
+from sqlalchemy import Column
+from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
-from .base import Base
 
+class Amenity(BaseModel, Base):
+    """ Amenity: Class"""
+    __tablename__ = "amenities"
+    name = Column(String(128), nullable=False)
+    place_amenities = relationship("Place", secondary="place_amenity",
+                                   viewonly=False)
 
-class Amenity(Base):
-    __tablename__ = 'amenities'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    place_amenities = relationship('PlaceAmenity', back_populates='amenity')
-
-    def __repr__(self):
-        return f"<Amenity(name='{self.name}')>"
-
+    def __init__(self, *args, **kwargs):
+        """
+            Init for inherited
+        """
+        super().__init__(*args, **kwargs)
